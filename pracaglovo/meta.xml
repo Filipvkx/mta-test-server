@@ -1,0 +1,4 @@
+<meta>
+    <script src="glovo.lua" type="server"/>
+    <script src="glovo_c.lua" type="client"/>
+</meta>
