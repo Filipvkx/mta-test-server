@@ -1,0 +1,27 @@
+<meta>
+    <script src="mechanik.lua" type="server"/>
+    <script src="mechanik_c.lua" type="client"/>
+
+    <file src="tablica.html" />
+    <file src="lista.html" />
+    <file src="sklep.html" />
+    <file src="postep.html" />
+    <file src="plyn.html" />
+    <file src="silnik.html" />
+    <file src="maska.html" />
+    <file src="olej.html" />
+    <file src="akumulator.html" />
+    <file src="filtrP.html" />
+    <file src="filtrK.html" />
+    <file src="lewy_bok.html" />
+    <file src="prawy_bok.html" />
+    <file src="tyl.html" />
+    <file src="kola.html" />
+    <file src="klamki.html" />
+    <file src="zamek.html" />
+
+    <file src="olej.png" />
+    <file src="butelka.png" />
+    <file src="sruba.png" />
+    <file src="felga.png" />
+</meta>   

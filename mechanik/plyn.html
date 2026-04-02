@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; height: 100vh; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; user-select: none; font-family: 'Montserrat', sans-serif; color: white; overflow: hidden; }
+        .box { position: relative; width: 800px; height: 600px; background: #1a1a1a; border: 5px solid #1ac2ff; box-shadow: 15px 15px 0 #000; }
+        
+        .funnel { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); width: 150px; height: 100px; background: #333; border: 4px solid #000; border-radius: 0 0 50px 50px; z-index: 5; }
+        .safe-zone { position: absolute; bottom: 150px; left: 50%; transform: translateX(-50%); width: 60px; height: 250px; border: 2px dashed rgba(26, 194, 255, 0.4); }
+
+        .bottle { position: absolute; width: 100px; height: 200px; background: #0066ff; border: 4px solid #000; border-radius: 10px 10px 5px 5px; pointer-events: none; z-index: 10; }
+        .bottle::after { content: 'PŁYN'; position: absolute; top: 40%; width: 100%; text-align: center; font-size: 12px; }
+        
+        .stream { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 12px; height: 0; background: #1ac2ff; border: 2px solid #000; opacity: 0; transition: height 0.1s; }
+        
+        .progress-container { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); width: 500px; height: 30px; background: #000; border: 3px solid #1ac2ff; }
+        .bar { width: 0%; height: 100%; background: #1ac2ff; box-shadow: 0 0 15px #1ac2ff; transition: 0.1s; }
+        
+        .instruction { position: absolute; top: 100px; width: 100%; text-align: center; font-size: 20px; text-transform: uppercase; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+    <div class="box" id="game-area">
+        <div class="instruction" id="info">Trzymaj butelkę nad lejkiem!</div>
+        <div class="progress-container"><div class="bar" id="bar"></div></div>
+        
+        <div class="safe-zone" id="zone"></div>
+        <div class="funnel"></div>
+        
+        <div class="bottle" id="bottle">
+            <div class="stream" id="stream"></div>
+        </div>
+    </div>
+
+    <script>
+        let progress = 0;
+        const bottle = document.getElementById('bottle');
+        const stream = document.getElementById('stream');
+        const bar = document.getElementById('bar');
+        const zone = document.getElementById('zone');
+        const area = document.getElementById('game-area');
+
+        window.addEventListener('mousemove', (e) => {
+            const areaRect = area.getBoundingClientRect();
+            
+            let mouseX = e.clientX - areaRect.left;
+            let mouseY = e.clientY - areaRect.top;
+
+            bottle.style.left = (mouseX - 50) + "px";
+            bottle.style.top = (mouseY - 100) + "px";
+            const bRect = bottle.getBoundingClientRect();
+            const zRect = zone.getBoundingClientRect();
+
+            if (bRect.left + 50 > zRect.left && bRect.left + 50 < zRect.right && bRect.top < zRect.bottom) {
+                stream.style.opacity = "1";
+                stream.style.height = (zRect.bottom - bRect.bottom) + "px";
+                progress += 0.3; 
+                bar.style.width = Math.min(progress, 100) + "%";
+
+                if (progress >= 100) {
+                    document.getElementById('info').innerText = "ZROBIONE!";
+                    mta.triggerEvent("zakonczMinigrePlyn");
+                }
+            } else {
+                stream.style.opacity = "0";
+                stream.style.height = "0";
+            }
+        });
+    </script>
+</body>
+</html>

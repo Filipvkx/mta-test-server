@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; height: 100vh; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; user-select: none; font-family: 'Montserrat'; color: white; overflow: hidden; }
+        .box { position: relative; width: 800px; height: 600px; background: #222; border: 5px solid #ff4d4d; box-shadow: 20px 20px 0 #000; }
+        
+        .battery { position: absolute; top: 150px; left: 200px; width: 400px; height: 300px; background: #333; border: 10px solid #111; }
+        .terminal { position: absolute; width: 60px; height: 60px; background: #555; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        #term-neg { top: -30px; left: 50px; background: #000; } 
+        #term-pos { top: -30px; right: 50px; background: #a00; } 
+
+        .screw { width: 30px; height: 30px; background: #888; border: 3px solid #000; border-radius: 5px; cursor: pointer; transition: 0.1s; }
+        
+        .rust { position: absolute; width: 100%; height: 100%; background: rgba(139, 69, 19, 0.7); border-radius: 50%; pointer-events: none; }
+
+        .progress-bar { position: absolute; bottom: 50px; left: 100px; width: 600px; height: 30px; background: #111; border: 3px solid #fff; }
+        .fill { width: 0%; height: 100%; background: #00ff66; transition: 0.2s; }
+        
+        .instruction { position: absolute; top: 40px; width: 100%; text-align: center; font-size: 24px; text-transform: uppercase; color: #ff4d4d; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="instruction" id="hint">Krok 1: Odkręć klemę ujemną (kręć kółka myszką na śrubie)</div>
+        
+        <div class="battery" id="bat">
+            <div class="terminal" id="term-neg">
+                <div class="screw" id="screw1"></div>
+                <div class="rust" id="rust1"></div>
+            </div>
+            <div class="terminal" id="term-pos">
+                <div class="screw" id="screw2"></div>
+                <div class="rust" id="rust2"></div>
+            </div>
+        </div>
+
+        <div class="progress-bar"><div class="fill" id="bar"></div></div>
+    </div>
+
+    <script>
+        let step = 0;
+        let progress = 0;
+        let lastAngle = 0;
+        let totalRotation = 0;
+
+        const bar = document.getElementById('bar');
+        const hint = document.getElementById('hint');
+
+        document.getElementById('screw1').addEventListener('mousemove', (e) => {
+            if (step !== 0) return;
+            handleRotation(e, 3600); 
+        });
+
+        document.getElementById('screw2').addEventListener('mousemove', (e) => {
+            if (step !== 2) return;
+            handleRotation(e, 3600);
+        });
+
+        function handleRotation(e, target) {
+            const rect = e.target.getBoundingClientRect();
+            const x = e.clientX - (rect.left + rect.width / 2);
+            const y = e.clientY - (rect.top + rect.height / 2);
+            const angle = Math.atan2(y, x) * (180 / Math.PI);
+            
+            let diff = angle - lastAngle;
+            if (diff > 180) diff -= 360;
+            if (diff < -180) diff += 360;
+            
+            totalRotation += Math.abs(diff);
+            lastAngle = angle;
+            
+            progress = (totalRotation / target) * 100;
+            updateBar();
+
+            if (totalRotation >= target) {
+                nextStep();
+            }
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            if (step === 1 || step === 3) {
+                progress += Math.abs(e.movementX) + Math.abs(e.movementY);
+                updateBar(3000); 
+                
+                let rustIdx = step === 1 ? 'rust1' : 'rust2';
+                document.getElementById(rustIdx).style.opacity = 1 - (progress / 3000);
+
+                if (progress >= 3000) nextStep();
+            }
+        });
+
+        function updateBar(target = 100) {
+            let p = (step === 0 || step === 2) ? (totalRotation / 3600) * 100 : (progress / 3000) * 100;
+            bar.style.width = Math.min(p, 100) + "%";
+        }
+
+        function nextStep() {
+            step++;
+            progress = 0;
+            totalRotation = 0;
+            bar.style.width = "0%";
+
+            if (step === 1) hint.innerText = "Krok 2: Wyczyść klemę ujemną (szoruj szybko myszką!)";
+            if (step === 2) hint.innerText = "Krok 3: Odkręć klemę dodatnią (kręć kółka)";
+            if (step === 3) hint.innerText = "Krok 4: Wyczyść klemę dodatnią (szoruj!)";
+            if (step === 4) {
+                hint.innerText = "Krok 5: Wyciągnij stary akumulator (kliknij go)";
+                document.getElementById('bat').style.cursor = "pointer";
+                document.getElementById('bat').onclick = () => {
+                    document.getElementById('bat').style.transition = "2s";
+                    document.getElementById('bat').style.transform = "translateY(-1000px)";
+                    setTimeout(() => {
+                        hint.innerText = "ZAKOŃCZONO!";
+                        mta.triggerEvent("zakonczAkumulator");
+                    }, 2000);
+                };
+            }
+        }
+    </script>
+</body>
+</html>

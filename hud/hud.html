@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            margin: 0; padding: 0; height: 100vh; width: 100vw; 
+            background: transparent !important; font-family: 'Montserrat', sans-serif; 
+            user-select: none; overflow: hidden; position: relative; 
+        }
+        
+        .hp-container { 
+            position: absolute; top: 20px; right: 25px; 
+            display: flex; align-items: center; gap: 8px; 
+        }
+        .health-text { 
+            color: #ff4d4f; 
+            font-size: 30px; 
+            font-weight: 900; 
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); text-transform: uppercase; 
+        }
+        
+        .loading svg polyline { 
+            fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; 
+        }
+        .loading svg polyline#back { 
+            fill: none; stroke: #ff4d5033; 
+        }
+        .loading svg polyline#front { 
+            fill: none; stroke: #ff4d4f; stroke-dasharray: 48, 144; stroke-dashoffset: 192; 
+            animation: dash_682 1.4s linear infinite; 
+        }
+        
+        @keyframes dash_682 { 
+            72.5% { opacity: 0; } 
+            to { stroke-dashoffset: 0; } 
+        }
+
+        .money-container { 
+            position: absolute; top: 65px; right: 25px; 
+            font-size: 30px; 
+            font-weight: 900; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); 
+            display: flex; align-items: center; gap: 5px; 
+        }
+        .dollar-sign { 
+            color: white; 
+            font-size: 30px; 
+            font-weight: 900; 
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="hp-container">
+        <div class="loading">
+            <svg width="64px" height="48px">
+                <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="back"></polyline>
+                <polyline points="0.157 23.954, 14 23.954, 21.843 48, 43 0, 50 24, 64 24" id="front"></polyline>
+            </svg>
+        </div>
+        <span id="health-value" class="health-text">100HP</span>
+    </div>
+
+    <div class="money-container">
+        <span class="dollar-sign">$</span>
+        <span id="money-value">0</span>
+    </div>
+
+    <script>
+        function updateHud(health, money) {
+            document.getElementById('health-value').innerText = health + "HP";
+            let formattedMoney = money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            document.getElementById('money-value').innerText = formattedMoney;
+        }
+    </script>
+</body>
+</html>

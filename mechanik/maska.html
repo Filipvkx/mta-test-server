@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        body { 
+            margin: 0; 
+            padding: 0; 
+            height: 100vh; 
+            width: 100vw;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background: transparent !important; 
+            user-select: none; 
+            font-family: 'Montserrat', sans-serif;
+            gap: 8px; 
+            overflow: hidden; 
+            box-sizing: border-box;
+        }
+
+        button {
+            border-radius: 8px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            outline: none; 
+            transition: 0.3s ease-in-out;
+            background-color: rgba(17, 17, 17, 0.85); 
+            backdrop-filter: blur(5px); 
+            color: white;
+            font-weight: 900; 
+            cursor: pointer; 
+            padding: 8px 12px; 
+            background-size: 200% auto; 
+            text-transform: uppercase; 
+            font-size: 11px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+        
+        .btn-open:hover { 
+            background-image: linear-gradient(90deg, #8a2be2, #00d4ff); 
+            background-position: right center;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.6); 
+            border-color: transparent;
+        }
+        
+        .btn-close:hover { 
+            background-image: linear-gradient(90deg, #ffb300, #ff007f); 
+            background-position: right center;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.6); 
+            border-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-open" onclick="mta.triggerEvent('akcjaMaska', 'otworz')">Otwórz maskę</button>
+    <button class="btn-close" onclick="mta.triggerEvent('akcjaMaska', 'wyjdz')">Wyjdź z widoku</button>
+</body>
+</html>

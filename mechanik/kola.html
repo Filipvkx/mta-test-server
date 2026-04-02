@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            margin: 0; height: 100vh; background: rgba(0,0,0,0.85); 
+            display: flex; justify-content: center; align-items: center; 
+            user-select: none; font-family: 'Montserrat', sans-serif; 
+            color: white; overflow: hidden; 
+        }
+        
+        .wheel-container { 
+            position: relative; width: 600px; height: 600px; 
+            background: url('felga.png') no-repeat center center; 
+            background-size: contain; 
+            filter: drop-shadow(10px 10px 20px #000);
+        }
+
+        .screw { 
+            position: absolute; 
+            width: 70px; 
+            height: 70px; 
+            background: url('sruba.png') no-repeat center center; 
+            background-size: contain; 
+            cursor: pointer; 
+            transform-origin: center;
+            filter: drop-shadow(3px 3px 5px #000);
+        }
+        
+        .screw:active { filter: brightness(0.7) drop-shadow(0px 0px 0px #000); }
+        .screw.removed { opacity: 0; pointer-events: none; transform: scale(1.5) translateY(50px) !important; transition: 0.5s; }
+
+        #s1 { top: 22%; left: 50%; transform: translate(-50%, -50%); }
+        #s2 { top: 42%; left: 76%; transform: translate(-50%, -50%); }
+        #s3 { top: 70%; left: 66%; transform: translate(-50%, -50%); }
+        #s4 { top: 70%; left: 34%; transform: translate(-50%, -50%); }
+        #s5 { top: 42%; left: 24%; transform: translate(-50%, -50%); }
+
+        .progress-bar-container { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); width: 400px; height: 25px; background: #111; border: 3px solid #1ac2ff; box-shadow: 0 0 15px #000; }
+        .progress-bar { width: 0%; height: 100%; background: #1ac2ff; transition: width 0.1s; box-shadow: inset 0 0 10px rgba(255,255,255,0.5); }
+        .instruction { position: absolute; top: 15px; width: 100%; text-align: center; font-size: 22px; color: #1ac2ff; text-shadow: 2px 2px 0 #000; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+    <div class="instruction" id="info">PRZYTRZYMAJ LPM, ABY ODKR&#280;CI&#262; &#346;RUB&#280;!</div>
+    <div class="progress-bar-container"><div class="progress-bar" id="bar"></div></div>
+
+    <div class="wheel-container">
+        <div class="screw" id="s1" onmousedown="start(1)" onmouseup="stop()" onmouseleave="stop()"></div>
+        <div class="screw" id="s2" onmousedown="start(2)" onmouseup="stop()" onmouseleave="stop()"></div>
+        <div class="screw" id="s3" onmousedown="start(3)" onmouseup="stop()" onmouseleave="stop()"></div>
+        <div class="screw" id="s4" onmousedown="start(4)" onmouseup="stop()" onmouseleave="stop()"></div>
+        <div class="screw" id="s5" onmousedown="start(5)" onmouseup="stop()" onmouseleave="stop()"></div>
+    </div>
+
+    <script>
+        let screwsRemoved = 0;
+        let activeScrew = null;
+        let progress = 0;
+        let timer = null;
+        let rotation = 0;
+
+        function start(id) {
+            let el = document.getElementById('s' + id);
+            if (el.classList.contains('removed')) return;
+            
+            activeScrew = id;
+            progress = 0;
+            
+            timer = setInterval(() => {
+                progress += 3.5; 
+                rotation += 60; 
+                
+                el.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+                document.getElementById('bar').style.width = Math.min(progress, 100) + "%";
+
+                if (progress >= 100) {
+                    stop();
+                    el.classList.add('removed');
+                    screwsRemoved++;
+                    
+                    if (screwsRemoved === 5) {
+                        document.getElementById('info').innerHTML = "KO&#321;O ZDJ&#280;TE!";
+                        document.getElementById('bar').style.width = "100%";
+                        document.getElementById('bar').style.background = "#00ff66";
+                        document.querySelector('.progress-bar-container').style.borderColor = "#00ff66";
+                        setTimeout(() => mta.triggerEvent("zakonczMinigreKola"), 1000);
+                    }
+                }
+            }, 50);
+        }
+
+        function stop() {
+            clearInterval(timer);
+            timer = null;
+            progress = 0;
+            document.getElementById('bar').style.width = "0%";
+            if (activeScrew) {
+                document.getElementById('s' + activeScrew).style.transform = `translate(-50%, -50%) rotate(0deg)`;
+                activeScrew = null;
+            }
+        }
+    </script>
+</body>
+</html>

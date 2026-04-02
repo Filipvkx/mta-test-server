@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            margin: 0; height: 100vh; background: rgba(0,0,0,0.85); 
+            display: flex; justify-content: center; align-items: center; 
+            user-select: none; font-family: 'Montserrat', sans-serif; color: white; overflow: hidden; 
+        }
+        
+        .trunk-panel {
+            position: relative; width: 400px; height: 400px; background: #2a2a2a; 
+            border: 10px solid #1a1a1a; border-radius: 50%; box-shadow: inset 0 0 50px #000;
+        }
+
+        .lock-cylinder {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 120px; height: 120px; background: radial-gradient(circle, #888, #444); 
+            border-radius: 50%; border: 6px solid #111; box-shadow: 5px 5px 15px rgba(0,0,0,0.8);
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        .keyhole {
+            width: 15px; height: 40px; background: #111; border-radius: 5px;
+        }
+
+        .screw {
+            position: absolute; width: 35px; height: 35px;
+            background: url('sruba.png') no-repeat center center;
+            background-size: contain; cursor: pointer; transform-origin: center;
+            filter: drop-shadow(2px 2px 3px #000);
+        }
+        .screw.removed { opacity: 0; pointer-events: none; transform: translate(-50%, 50px) !important; transition: 0.5s; }
+
+        #s1 { top: 15%; left: 50%; transform: translate(-50%, 0) rotate(0deg); }
+        #s2 { bottom: 15%; left: 50%; transform: translate(-50%, 0) rotate(0deg); }
+
+        .progress-bar-container { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); width: 400px; height: 25px; background: #111; border: 3px solid #ffb300; box-shadow: 0 0 15px #000; }
+        .progress-bar { width: 0%; height: 100%; background: #ffb300; transition: width 0.1s; box-shadow: inset 0 0 10px rgba(255,255,255,0.5); }
+        .instruction { position: absolute; top: 15px; width: 100%; text-align: center; font-size: 22px; color: #ffb300; text-shadow: 2px 2px 0 #000; letter-spacing: 1px; }
+
+        #pry-zone {
+            position: absolute; inset: 0; display: none; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="instruction" id="info">ETAP 1: ODKR&#280;&#262; &#346;RUBY MOCUJ&#260;CE!</div>
+    <div class="progress-bar-container"><div class="progress-bar" id="bar"></div></div>
+
+    <div class="trunk-panel">
+        <div class="lock-cylinder" id="lock">
+            <div class="keyhole"></div>
+        </div>
+        
+        <div class="screw" id="s1" onmousedown="startUnscrew(1)" onmouseup="stopUnscrew()" onmouseleave="stopUnscrew()"></div>
+        <div class="screw" id="s2" onmousedown="startUnscrew(2)" onmouseup="stopUnscrew()" onmouseleave="stopUnscrew()"></div>
+        
+        <div id="pry-zone" onmousedown="pryLock()"></div>
+    </div>
+
+    <script>
+        let step = 1;
+        let screwsRemoved = 0;
+        let activeScrew = null;
+        let progress = 0;
+        let timer = null;
+        let rotation = 0;
+        let fallTimer = null; 
+
+        function startUnscrew(id) {
+            if (step !== 1) return;
+            let el = document.getElementById('s' + id);
+            if (el.classList.contains('removed')) return;
+            
+            activeScrew = id;
+            progress = 0;
+            
+            timer = setInterval(() => {
+                progress += 4;
+                rotation += 45;
+                
+                el.style.transform = `translate(-50%, 0) rotate(${rotation}deg)`;
+                document.getElementById('bar').style.width = Math.min(progress, 100) + "%";
+
+                if (progress >= 100) {
+                    stopUnscrew();
+                    el.classList.add('removed');
+                    screwsRemoved++;
+                    
+                    if (screwsRemoved === 2) {
+                        startPryingPhase();
+                    }
+                }
+            }, 40);
+        }
+
+        function stopUnscrew() {
+            clearInterval(timer);
+            if (step === 1 && progress < 100) {
+                progress = 0;
+                document.getElementById('bar').style.width = "0%";
+                if (activeScrew) {
+                    document.getElementById('s' + activeScrew).style.transform = `translate(-50%, 0) rotate(0deg)`;
+                    activeScrew = null;
+                }
+            }
+        }
+
+        function startPryingPhase() {
+            step = 2;
+            progress = 0;
+            document.getElementById('bar').style.width = "0%";
+            document.getElementById('bar').style.background = "#ff4d4d"; 
+            document.querySelector('.progress-bar-container').style.borderColor = "#ff4d4d";
+            document.getElementById('info').innerHTML = "ETAP 2: SPAMUJ LPM, ABY PODWA&#379;Y&#262; ZAMEK!";
+            document.getElementById('info').style.color = "#ff4d4d";
+            
+            document.getElementById('pry-zone').style.display = "block";
+
+            fallTimer = setInterval(() => {
+                if (progress > 0) {
+                    progress -= 1.5; 
+                    document.getElementById('bar').style.width = Math.max(0, progress) + "%";
+                }
+            }, 50);
+        }
+
+        function pryLock() {
+            if (step !== 2) return;
+            progress += 8; 
+            
+            let shake = Math.random() * 6 - 3;
+            document.getElementById('lock').style.transform = `translate(calc(-50% + ${shake}px), calc(-50% + ${shake}px))`;
+            
+            if (progress >= 100) {
+                step = 3;
+                clearInterval(fallTimer);
+                document.getElementById('bar').style.width = "100%";
+                document.getElementById('bar').style.background = "#00ff66";
+                document.querySelector('.progress-bar-container').style.borderColor = "#00ff66";
+                document.getElementById('info').innerHTML = "ZAMEK WYJ&#280;TY!";
+                document.getElementById('info').style.color = "#00ff66";
+                
+                document.getElementById('lock').style.transition = "0.5s";
+                document.getElementById('lock').style.transform = "translate(-50%, 150px) scale(1.2)";
+                document.getElementById('lock').style.opacity = "0";
+
+                setTimeout(() => mta.triggerEvent("zakonczMinigreZamek"), 1000);
+            }
+        }
+    </script>
+</body>
+</html>

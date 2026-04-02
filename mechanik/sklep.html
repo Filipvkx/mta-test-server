@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;750;900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: transparent !important; user-select: none; -webkit-user-select: none; font-family: 'Montserrat', sans-serif;}
+
+        .card { position: relative; border-radius: 25px; width: 400px; }
+        .card::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(163deg, #ffb300, #ff007f, #8a2be2, #00d4ff); filter: blur(15px); opacity: 0.4; z-index: -1; border-radius: 25px; transition: 0.4s; }
+        .card:hover::before { opacity: 0.85; filter: blur(25px); inset: -4px; }
+        .card2 { background-color: rgba(17, 17, 17, 0.85); backdrop-filter: blur(8px); border-radius: 25px; padding: 20px; display: flex; flex-direction: column; }
+
+        .head { font-size: 1.5em; font-weight: 900; color: white; text-transform: uppercase; text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: rgba(255,255,255,0.6); font-size: 0.85em; font-weight: 700; margin-bottom: 20px; }
+
+        .parts-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+
+        .checkbox-label {
+            display: flex; align-items: center; gap: 15px; background-color: #1a1a1a; padding: 12px 15px; 
+            border-radius: 12px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; text-transform: uppercase;
+        }
+        
+        .checkbox-label:hover { 
+            background-color: #222; 
+            border-color: rgba(255, 0, 127, 0.5); 
+            box-shadow: -5px 0 15px rgba(255, 0, 127, 0.2); 
+            transform: translateX(5px); 
+        }
+        
+        input[type="checkbox"] { width: 18px; height: 18px; accent-color: #ff007f; cursor: pointer; }
+
+        .checkbox-label:has(input:checked) {
+            background-image: linear-gradient(90deg, rgba(255,0,127,0.1), rgba(138,43,226,0.1));
+            border-color: #8a2be2;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+        }
+
+        .buttons { display: flex; gap: 10px; }
+        
+        .btn {
+            flex: 1; border-radius: 12px; border: none; outline: none; transition: 0.4s ease-in-out;
+            background-color: #252525; color: white; font-family: 'Montserrat', sans-serif;
+            font-weight: 900; cursor: pointer; padding: 1em; background-size: 200% auto; text-transform: uppercase; font-size: 13px;
+        }
+        
+        .btn-buy:hover { background-image: linear-gradient(90deg, #8a2be2, #00d4ff); background-position: right center; box-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
+        .btn-close:hover { background-image: linear-gradient(90deg, #ffb300, #ff007f); background-position: right center; box-shadow: 0 0 15px rgba(255, 0, 127, 0.5); }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="card2">
+        <div class="head">Kasa Hurtowni</div>
+        <div class="subtitle">Wybierz części do zlecenia</div>
+        <div class="parts-container" id="parts-list"></div>
+        <div class="buttons">
+            <button class="btn btn-buy" onclick="kupCzesci()">Kup wybrane</button>
+            <button class="btn btn-close" onclick="zamknij()">Anuluj</button>
+        </div>
+    </div>
+</div>
+<script>
+    function kupCzesci() {
+        let checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        let values = [];
+        checkboxes.forEach((cb) => values.push(cb.value));
+        mta.triggerEvent("weryfikujZakupy", values.join(","));
+    }
+    function zamknij() {
+        mta.triggerEvent("zamknijSklepHTML");
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;750;900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: transparent !important; user-select: none; -webkit-user-select: none; font-family: 'Montserrat', sans-serif; }
+
+        .card { position: relative; border-radius: 25px; width: 350px; min-height: 250px; }
+        .card::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(163deg, #ffb300, #ff007f, #8a2be2, #00d4ff); filter: blur(15px); opacity: 0.4; z-index: -1; border-radius: 25px; transition: 0.4s; }
+        .card:hover::before { opacity: 0.85; filter: blur(25px); inset: -4px; }
+        
+        .card2 { background-color: rgba(17, 17, 17, 0.85); backdrop-filter: blur(8px); border-radius: 25px; padding: 20px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
+
+        .head { font-size: 1.4em; font-weight: 900; color: white; text-transform: uppercase; text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: rgba(255,255,255,0.6); font-size: 0.85em; font-weight: 700; margin-top: -5px; margin-bottom: 15px; }
+
+        #parts-list { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; margin-bottom: 15px; }
+
+        .part-item { background-color: #1a1a1a; padding: 12px 15px; border-radius: 12px; color: #fff; font-size: 13px; font-weight: 700; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+
+        .button {
+            border-radius: 12px; border: none; outline: none; transition: 0.4s ease-in-out;
+            background-color: #252525; color: white; font-family: 'Montserrat', sans-serif;
+            font-weight: 900; cursor: pointer; padding: 1em; width: 100%; background-size: 200% auto; text-transform: uppercase; font-size: 14px;
+        }
+        .button:hover { background-image: linear-gradient(90deg, #ffb300, #ff007f, #8a2be2, #00d4ff); background-position: right center; box-shadow: 0 0 20px rgba(255, 0, 127, 0.5); }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="card2">
+        <div class="head">Postęp pracy</div>
+        <div class="subtitle">Elegy 2.6L R6</div>
+        <div id="parts-list"></div>
+        <button class="button" id="btnClose">Zamknij</button>
+    </div>
+</div>
+<script>
+    document.getElementById("btnClose").addEventListener("click", function() {
+        mta.triggerEvent("zamknijTabliceHTML");
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<meta>
+    <script src="hud_c.lua" type="client" />
+    <file src="hud.html" />
+
+    <script src="radar/radar.lua" type="client" />
+    <file src="radar/replace.fx" />
+    <file src="radar/*.png" />
+</meta>

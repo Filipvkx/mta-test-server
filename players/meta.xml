@@ -2,6 +2,17 @@
     <script src="players.lua" type="server"/>
     <script src="authentication.lua" type="server"/>
     <script src="login_c.lua" type="client"/>
-    <script src="register_c.lua" type="client"/>
     <script src="commands_c.lua" type="client"/>
+
+    <file src="login.html" />
+    <file src="tlo.jpg" />
+    <file src="muzyka.mp3" />
+
+    <script src="spawn_c.lua" type="client" />
+    <script src="spawn.lua" type="server" />
+    <file src="spawn.html" />
+    
+    <file src="ls.jpg" />
+    <file src="sf.jpg" />
+    <file src="lv.jpg" />
 </meta>

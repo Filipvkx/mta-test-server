@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { margin: 0; height: 100vh; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; user-select: none; font-family: sans-serif; color: white; }
+        .box { position: relative; width: 800px; height: 600px; background: #333; border: 5px solid #fff; }
+        .airbox { position: absolute; top: 150px; left: 200px; width: 400px; height: 300px; background: #222; border: 5px solid #000; }
+        .clip { position: absolute; width: 20px; height: 60px; background: #555; border: 2px solid #000; cursor: pointer; transition: 0.3s; }
+        .clip.unlocked { background: #0f0; transform: translateY(-20px); }
+        #c1 { top: -30px; left: 50px; } #c2 { top: -30px; right: 50px; }
+        #c3 { bottom: -30px; left: 50px; } #c4 { bottom: -30px; right: 50px; }
+        .dust { position: absolute; inset: 0; background: rgba(100, 80, 60, 0.8); pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div id="hint" style="text-align: center; padding: 20px; font-size: 20px;">Krok 1: Odpi&#281;cie 4 zatrzask&oacute;w (kliknij je)</div>
+        <div class="airbox" id="ab">
+            <div class="clip" id="c1" onclick="unlock(1)"></div><div class="clip" id="c2" onclick="unlock(2)"></div>
+            <div class="clip" id="c3" onclick="unlock(3)"></div><div class="clip" id="c4" onclick="unlock(4)"></div>
+            <div class="dust" id="dust"></div>
+        </div>
+    </div>
+    <script>
+        let unlocked = 0;
+        let dustCleaned = 0;
+        function unlock(id) {
+            const c = document.getElementById('c'+id);
+            if(c.classList.contains('unlocked')) return;
+            c.classList.add('unlocked');
+            unlocked++;
+            if(unlocked === 4) {
+                document.getElementById('hint').innerHTML = "Krok 2: Wyczy&#347;&#263; kurz z obudowy (machaj myszk&#261;!)";
+            }
+        }
+        window.addEventListener('mousemove', (e) => {
+            if(unlocked < 4 || dustCleaned >= 100) return;
+            dustCleaned += 0.5;
+            document.getElementById('dust').style.opacity = 1 - (dustCleaned/100);
+            if(dustCleaned >= 100) {
+                document.getElementById('hint').innerHTML = "ZAKO&#323;CZONO!";
+                setTimeout(() => mta.triggerEvent("zakonczMinigreFiltrP"), 1000);
+            }
+        });
+    </script>
+</body>
+</html>

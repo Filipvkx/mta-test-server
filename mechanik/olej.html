@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; height: 100vh; background: rgba(0,0,0,0.85) !important; display: flex; justify-content: center; align-items: center; user-select: none; font-family: 'Montserrat', sans-serif; color: white; overflow: hidden; }
+        
+        .container { position: relative; width: 1200px; height: 900px; border: 4px solid #533b70; background: #1a1a1a; box-shadow: 15px 15px 0 #000; overflow: hidden; }
+        
+        .oil-stream { 
+            position: absolute; 
+            top: 0;      
+            left: 0;     
+            width: 100%; 
+            height: 0;   
+            background-image: url('olej.png'); 
+            background-repeat: repeat; 
+            background-size: 25% auto; 
+            transition: height 1.5s ease-in-out; 
+            z-index: 5;
+            opacity: 0.9;
+            border-bottom: 2px solid #000; 
+        }
+        
+        .oil-stream.active { height: 250px; }
+
+        .oil-bottle { 
+            position: absolute; 
+            top: 100px; 
+            right: 50px; 
+            width: 360px; 
+            height: 660px; 
+            background-image: url('butelka.png'); 
+            background-size: contain; 
+            background-repeat: no-repeat; 
+            display: none; 
+            cursor: pointer; 
+            transition: transform 1s ease-in-out; 
+            z-index: 15;
+        }
+        .oil-bottle.active { display: block; }
+        .oil-bottle.pouring { transform: rotate(-110deg) translate(-350px, 120px); }
+
+        .drain-plug { 
+            position: absolute; 
+            bottom: 80px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 90px; 
+            height: 90px; 
+            background-image: url('sruba.png'); 
+            background-size: contain; 
+            background-repeat: no-repeat; 
+            cursor: pointer; 
+            transition: 0.5s; 
+            z-index: 10;
+        }
+        .drain-plug.unscrewed { transform: translate(-50%, 150px); opacity: 0; }
+
+        .header { position: absolute; top: 40px; width: 100%; text-align: center; font-size: 32px; text-transform: uppercase; color: #ffb300; letter-spacing: 3px; z-index: 20; text-shadow: 3px 3px 0px #000; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" id="status">Krok 1: Odkręć śrubę spustową</div>
+        
+        <div class="oil-stream" id="stream"></div>
+        
+        <div class="drain-plug" id="plug" onclick="unscrewPlug()"></div>
+        <div class="oil-bottle" id="bottle" onclick="pourOil()"></div>
+    </div>
+
+    <script>
+        let stage = 0;
+
+        function unscrewPlug() {
+            if(stage !== 0) return;
+            document.getElementById('plug').classList.add('unscrewed');
+            
+            document.getElementById('stream').classList.add('active');
+            document.getElementById('status').innerText = "Spuszczanie starego oleju...";
+            
+            setTimeout(() => {
+                document.getElementById('status').innerText = "Krok 2: Wlej nowy olej";
+                document.getElementById('bottle').classList.add('active');
+                stage = 1;
+            }, 3000);
+        }
+
+        function pourOil() {
+            if(stage !== 1) return;
+            document.getElementById('bottle').classList.add('pouring');
+            document.getElementById('status').innerText = "Wlewanie...";
+            
+            setTimeout(() => {
+                document.getElementById('status').innerText = "ZAKOŃCZONO!";
+                setTimeout(() => {
+                    mta.triggerEvent("zakonczMinigreOlej");
+                }, 1000);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>

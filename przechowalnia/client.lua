@@ -1,0 +1,8 @@
+txd = engineLoadTXD ( "1.txd" )
+engineImportTXD ( txd, 14667 )
+col = engineLoadCOL ( "1.col" )
+engineReplaceCOL ( col, 14667 )
+dff = engineLoadDFF ( "1.dff", 0 )
+engineReplaceModel ( dff, 14667,true ) 
+engineSetModelLODDistance(14667, 999) 
+setOcclusionsEnabled( false )

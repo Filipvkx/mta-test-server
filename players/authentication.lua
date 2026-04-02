@@ -8,7 +8,6 @@ local function isPasswordRepeat(password, repeatpassword)
     return password == repeatpassword
 end    
 
--- create an account
 addEvent('auth:register-attempt', true)
 addEventHandler('auth:register-attempt', root, function(username, password, repeatpassword)
     local player = source
@@ -16,27 +15,21 @@ addEventHandler('auth:register-attempt', root, function(username, password, repe
         outputChatBox('Password are not the same', player, 255, 100, 100)
         return
     end
-    -- check if an account with that username already exists
     if getAccount(username) then
         return outputChatBox('An account already exists with that name.', player, 255, 100, 100)
     end
 
-    -- is the password valid?
     if not isPasswordValid(password) then
         return outputChatBox('The password supplied was not valid', player, 255, 100, 100)
     end
-    -- create a hash of the password
     passwordHash(password, 'bcrypt', {}, function (hashedPassword)
-    -- create the account
         local account = addAccount(username, hashedPassword)
         setAccountData(account, 'hashedPassword', hashedPassword)
 
-    -- let the user know the success 
         outputChatBox('Your account has been successfully created! You may now login with /accountLogin', player, 100, 255, 100)
     end)
 end)
 
--- login to their account
 addEvent('auth:login-attempt', true)
 addEventHandler('auth:login-attempt', root, function(username, password)
     
@@ -54,9 +47,10 @@ addEventHandler('auth:login-attempt', root, function(username, password)
         end   
 
         if logIn(player, account, hashedPassword) then
-            spawnPlayer(player, 0, 0, 5)
-            setCameraTarget(player, player)
-            return triggerClientEvent(player, 'login-menu:close', player)
+            triggerClientEvent(player, 'login-menu:close', player)
+            
+            triggerClientEvent(player, 'pokazMenuSpawnu', player)
+            return
         end
 
         return outputChatBox('An unkown error occured while attempting to authenticate.', player, 255, 100, 100)
@@ -64,7 +58,6 @@ addEventHandler('auth:login-attempt', root, function(username, password)
 
 end)
 
--- logout of their account
 addCommandHandler('accountLogout', function(player)
     logOut(player)
 end)
